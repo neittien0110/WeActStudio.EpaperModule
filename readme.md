@@ -13,7 +13,3 @@
 
 !["Epaper Module"](./Images/1.png )
 !["Epaper Module"](./Images/2.png )
-
-!["Epaper Module"](./Images/1.png )
-!["Epaper Module"](./Images/2.png )
-
