@@ -1,4 +1,8 @@
-
+// -----------------------------------------------------------------------------------------------------------------------------
+// Dependencies: GxEPD2 của
+// Tested:  ESP32-C3 DevKitM-1 dual USB
+// Result: https://youtu.be/yVmRT403PUM
+//------------------------------------------------------------------------------------------------------------------------------
 // base class GxEPD2_GFX can be used to pass references or pointers to the display instance as parameter, uses ~1.2k more code
 // enable or disable GxEPD2_GFX base class
 #define ENABLE_GxEPD2_GFX 0
@@ -7,22 +11,23 @@
 #include <GxEPD2_3C.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 
+// Cắm y hệt như chú thích sau. Giữ nguyên comment
 // ESP32-C3 SS=7,SCL(SCK)=4,SDA(MOSI)=6,BUSY=3,RST=2,DC=1
 
 // 2.13'' EPD Module
-GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0213BN 122x250, SSD1680
+//GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0213BN 122x250, SSD1680
 //GxEPD2_3C<GxEPD2_213_Z98c, GxEPD2_213_Z98c::HEIGHT> display(GxEPD2_213_Z98c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEY0213Z98 122x250, SSD1680
 
 // 2.9'' EPD Module
-//GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT> display(GxEPD2_290_BS(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0290BS 128x296, SSD1680
+GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT> display(GxEPD2_290_BS(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0290BS 128x296, SSD1680
 //GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(GxEPD2_290_C90c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEM029C90 128x296, SSD1680
 
 void setup()
 {
   pinMode(8, OUTPUT);
   digitalWrite(8, HIGH);
-    
-  display.init(115200,true,50,false);
+
+  display.init(115200, true, 50, false);
   helloWorld();
   helloFullScreenPartialMode();
   delay(1000);
@@ -31,11 +36,12 @@ void setup()
     showPartialUpdate();
     delay(1000);
   }
+  helloWorld();
   display.hibernate();
 }
 
-const char HelloWorld[] = "Hello World!";
-const char HelloWeACtStudio[] = "WeAct Studio";
+const char HelloWorld[] = "Nguyen Duc Tien";
+const char HelloWeACtStudio[] = "tien.nguyenduc@hust.edu.vn";
 
 void helloWorld()
 {
@@ -52,12 +58,12 @@ void helloWorld()
   do
   {
     display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y-tbh);
+    display.setCursor(x, y - tbh);
     display.print(HelloWorld);
     display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
     display.getTextBounds(HelloWeACtStudio, 0, 0, &tbx, &tby, &tbw, &tbh);
     x = ((display.width() - tbw) / 2) - tbx;
-    display.setCursor(x, y+tbh);
+    display.setCursor(x, y + tbh);
     display.print(HelloWeACtStudio);
   }
   while (display.nextPage());
@@ -188,5 +194,5 @@ void loop() {
   digitalWrite(8, HIGH);
   delay(1000);
   digitalWrite(8, LOW);
-  delay(1000);  
+  delay(1000);
 }
