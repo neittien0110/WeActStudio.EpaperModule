@@ -19,14 +19,29 @@
 // enable or disable GxEPD2_GFX base class
 #define ENABLE_GxEPD2_GFX 0
 
-#include <GxEPD2_BW.h>
-//#include <GxEPD2_3C.h>
-#include <Fonts/FreeMonoBold9pt7b.h>
+//------------------------------------------------------
+//Có màu
+#define COLORED 
 
-//#define ESP32_C3
+//Loại board
+//#define ESP32_C3_DUALUSB
 #define ESP32_C3_SUPERMINI
 
-#if defined(ESP32_C3)
+//Kích thước màn hình
+//#define EPD_29in
+#define EPD_23in
+
+//------------------------------------------------------
+
+#if defined(COLORED)
+  #include <GxEPD2_3C.h>
+#else
+  #include <GxEPD2_BW.h>
+#endif  
+#include <Fonts/FreeMonoBold9pt7b.h>
+
+
+#if defined(ESP32_C3_DUALUSB)
   //#define Porting_Sample
   #define Porting_Continous
   #if defined(Porting_Sample)
@@ -58,14 +73,22 @@
     #define DC 1
 #endif
 
+#if defined(EPD_23in)
+  // 2.13'' EPD Module
+  #if defined(COLORED)
+    GxEPD2_3C<GxEPD2_213_Z98c, GxEPD2_213_Z98c::HEIGHT> display(GxEPD2_213_Z98c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEY0213Z98 122x250, SSD1680
+  #else 
+    GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0213BN 122x250, SSD1680
+  #endif 
+#elif defined(EPD_29in)
+  // 2.9'' EPD Module
+  #if defined(COLORED)
+    GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(GxEPD2_290_C90c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEM029C90 128x296, SSD1680
+  #else
+    GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT> display(GxEPD2_290_BS(SS, DC, RST, BUSY)); // DEPG0290BS 128x296, SSD1680    
+  #endif    
+#endif
 
-// 2.13'' EPD Module
-//GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // DEPG0213BN 122x250, SSD1680
-//GxEPD2_3C<GxEPD2_213_Z98c, GxEPD2_213_Z98c::HEIGHT> display(GxEPD2_213_Z98c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEY0213Z98 122x250, SSD1680
-
-// 2.9'' EPD Module
-GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT> display(GxEPD2_290_BS(SS, DC, RST, BUSY)); // DEPG0290BS 128x296, SSD1680
-//GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(GxEPD2_290_C90c(/*CS=5*/ SS, /*DC=*/ 1, /*RST=*/ 2, /*BUSY=*/ 3)); // GDEM029C90 128x296, SSD1680
 
 void setup()
 {
@@ -91,16 +114,20 @@ void setup()
 }
 
 #define SpaceOfLine  5;
-const char MyName[] = "Nguyen Duc Tien z ts" ;
-const char MyEmail[] = "tiennd@soict.hust.edu.vn";
-const char MyHandphone[] = "Tel: 091-313-7399";
+const char MyName[] = "Nguyen Duc Tien" ;
+const char MyEmail[] = "........@hust.edu.vn";
+const char MyHandphone[] = "Tel: .......";
 const char MyOffice[] = "Adr: B1-801, SoICT";
 
 
 void HelloWorld()
 {
+  /// Xoay màn hình góc 90* = 1
   display.setRotation(1);
+  // Thiết lập fonr chữ
   display.setFont(&FreeMonoBold9pt7b);
+
+  // Thiết lập màu chữ
   display.setTextColor(GxEPD_BLACK);
   
   int16_t tbx;
@@ -126,12 +153,16 @@ void HelloWorld()
     x = ((display.width() - tbw) / 2) - tbx;
     /// Thiết lập điểm vẽ về vị trí trên trái
     display.setCursor(x, y);
+
+    ///Thiết lập màu chữ
+    display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
     /// Hiển thị dòng chữ
     display.print(MyName);
     // Chuyển sang dòng tiếp theo và giãn dòng
     y = y + tbh + 2*SpaceOfLine;
     
-    display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
+    ///Thiết lập màu chữ
+    display.setTextColor(GxEPD_BLACK);
     //Trả về kích thước dòng chữ
     display.getTextBounds(MyEmail, 0, 0, &tbx, &tby, &tbw, &tbh);
     // Căn lề giữa
